@@ -47,8 +47,50 @@ public class GridBuildingSystem : MonoBehaviour
     void Update()
     {
         Vector3 lookPosition = GetLookposition();
+        if(lookPosition == Vector3.zero)
+        {
+            Vector3Int gridPosition = grid.WorldToCell(lookPosition);
+            if(isValidGridPosition(gridPosition))
+            {
+                HighlightCell(gridPosition);
+                if(Input.GetMouseButtonDown(0))
+                {
+                    PlaceBuilding(gridPosition);
+                }
+                if(Input.GetMouseButtonDown(1))
+                {
+                    RemoveBuilding(gridPosition); 
+                }
+
+            }
+        }
     }
 
+    private void PlaceBuilding(Vector3Int gridPosition)
+    {
+        GridCell cell = cells[gridPosition.x, gridPosition.z];
+
+        if(!cell.IsOccupied)
+        {
+            Vector3 worldPosition = grid.GetCellCenterWorld(gridPosition);
+            GameObject building = Instantiate(buildingPrefabs, worldPosition, Quaternion.identity);
+            cell.IsOccupied = true;
+            cell.Building = building;
+        }
+    }
+
+    private void RemoveBuilding(Vector3Int gridPosition)
+    {
+        GridCell cell = cells[gridPosition.x, gridPosition.z];
+
+        if (!cell.IsOccupied)
+        {
+            Destroy(cell.Building);
+            cell.IsOccupied = true;
+            cell.Building = null;
+        }
+    }   
+        
     private void CreateGrid()
     {
         grid.cellSize = new Vector3(cellsize, cellsize, cellsize);
@@ -71,6 +113,26 @@ public class GridBuildingSystem : MonoBehaviour
         }
     }
 
+    //선택된 셀을 하이라이트하는 함수
+    private void HighlightCell(Vector3Int gridPosition)
+    {
+        for (int x = 0; x < width; x++)
+        {
+            for (int z = 0; z < height; z++)
+            {
+                GameObject cellObjecct = 
+                    cells[x, z].Building!=null?cells[x,z].Building : transform.GetChild(x * height + z).gameObject;
+                cellObjecct.GetComponent<Renderer>().material.color = Color. white;
+                   
+            }
+        }
+
+        GridCell cell = cells[gridPosition.x, gridPosition.z];
+        GameObject highlightObject =
+            cell.Building!=null ? cell.Building:transform.GetChild(gridPosition.x*height + gridPosition.z).gameObject;
+        highlightObject.GetComponent<Renderer>().material.color = cell.IsOccupied? Color.red : Color.green;
+    }
+    //
     private bool isValidGridPosition(Vector3Int gridPosition)
     {
         return gridPosition.x >= 0 && gridPosition.x < width &&
