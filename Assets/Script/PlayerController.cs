@@ -8,6 +8,7 @@ public class PlayerController : MonoBehaviour
     [Header("Player Movement")]
     public float moveSpeed = 5.0f;
     public float jumpforce = 5.0f;
+    public float rotationSpeed = 10f;
 
     [Header("Camera Settings")]
     public Camera firstPersonCamera;
@@ -28,7 +29,7 @@ public class PlayerController : MonoBehaviour
     public float mouseSensitivity = 2f;
 
     //내부 변수들
-    private bool isFirstPerson = true;
+    public bool isFirstPerson = true;
     private bool isGrounded;
     private Rigidbody rb;
 
@@ -46,12 +47,15 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        HandleMovement();
         HandleRotation();
         HandleJump();
         HandleCameraToggle();
 
+    }
 
+    private void FixedUpdate()
+    {
+        HandleMovement();
     }
 
     void SetActiveCamera()
@@ -74,13 +78,9 @@ public class PlayerController : MonoBehaviour
         targetVerticalRotation = Mathf.Clamp(targetVerticalRotation, yMinLimit, yMaxLimit);
         phi = Mathf.MoveTowards(phi, targetVerticalRotation, verticalRotationSpeed * Time.deltaTime);
 
-        //
-        transform.rotation = Quaternion.Euler(0.0f, theta, 0.0f);
-
-        firstPersonCamera.transform.localRotation = Quaternion.Euler(phi,0.0f, 0.0f);
-
         if(isFirstPerson)
         {
+            transform.rotation = Quaternion.Euler(0.0f, theta, 0.0f);
             firstPersonCamera.transform.localRotation = Quaternion.Euler(phi, 0.0f, 0.0f);
         }
         else
@@ -130,6 +130,7 @@ public class PlayerController : MonoBehaviour
         float moveHorizontal = Input.GetAxis("Horizontal");
         float moveVertical = Input.GetAxis("Vertical");
 
+        Vector3 movement;
         if(!isFirstPerson)
         {
             Vector3 cameraForward = thirdPersonCamera.transform.forward;
@@ -140,19 +141,25 @@ public class PlayerController : MonoBehaviour
             cameraRight.y = 0f;
             cameraRight.Normalize();
 
-            Vector3 movement =cameraForward * moveVertical + cameraRight * moveHorizontal;
-            rb.MovePosition(rb.position + movement * moveSpeed * Time.deltaTime);
+            //이동 벡터 계산
+            movement = cameraForward * moveVertical + cameraRight * moveHorizontal;
 
         }
         else
         {
-
             //캐릭터 기준으로 이동
-            Vector3 movement = transform.right * moveHorizontal + transform.forward * moveVertical;
-            rb.MovePosition(rb.position + movement * moveSpeed * Time.deltaTime);
-
+            movement = transform.right * moveHorizontal + transform.forward * moveVertical;
+          
         }
         
+        //이동 방향으로 캐릭터 회전
+        if(movement.magnitude > 0.1f)
+        {
+            Quaternion torotation = Quaternion.LookRotation(movement, Vector3.up);
+            transform.rotation = Quaternion.Slerp(transform.rotation, torotation, rotationSpeed * Time.deltaTime);
+        }
+
+        rb.MovePosition(rb.position + movement * moveSpeed * Time.deltaTime);
     }
 
     void OnCollisionStay(Collision collision)
