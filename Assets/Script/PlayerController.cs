@@ -30,9 +30,15 @@ public class PlayerController : MonoBehaviour
 
     //내부 변수들
     public bool isFirstPerson = true;
-    private bool isGrounded;
+    //private bool isGrounded;
     private Rigidbody rb;
 
+    public float fallingThreshold = -0.1f;
+
+    [Header("Ground Check Setting")]
+    public float groundCheckDistance = 0.3f;
+    public float slopedLimit = 45f;
+    public const int groundCheckPoints = 5;
 
     // Start is called before the first frame update
     void Start()
@@ -48,8 +54,12 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         HandleRotation();
-        HandleJump();
         HandleCameraToggle();
+
+        if(Input.GetKeyDown(KeyCode.Space))
+        {
+            HandleJump();
+        }
 
     }
 
@@ -64,7 +74,7 @@ public class PlayerController : MonoBehaviour
         thirdPersonCamera.gameObject.SetActive(isFirstPerson);
     }
 
-    void HandleRotation()
+    public void HandleRotation()
     {
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity;
         float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity;
@@ -97,7 +107,7 @@ public class PlayerController : MonoBehaviour
     }
 
     //1인칭
-    void HandleCameraToggle()
+    public void HandleCameraToggle()
     {
         if(Input.GetKeyDown(KeyCode.C))
         {
@@ -117,15 +127,14 @@ public class PlayerController : MonoBehaviour
     {
 
         //점프 버튼을 누르고 땅에 있을 때
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        if (IsGrounded())
         {
             rb.AddForce(Vector3.up * jumpforce, ForceMode.Impulse);
-            isGrounded = false;
         }
     }
 
 
-    void HandleMovement()
+    public void HandleMovement()
     {
         float moveHorizontal = Input.GetAxis("Horizontal");
         float moveVertical = Input.GetAxis("Vertical");
@@ -162,8 +171,20 @@ public class PlayerController : MonoBehaviour
         rb.MovePosition(rb.position + movement * moveSpeed * Time.deltaTime);
     }
 
-    void OnCollisionStay(Collision collision)
+    public bool isFalling()
     {
-        isGrounded = true;
+        return Physics.Raycast(transform.position, Vector3.down, 2.0f);
     }
+
+    public bool IsGrounded()
+    {
+        return Physics.Raycast(transform.position, Vector3.down, 2.0f);
+    }
+
+    public float GetVerticalVelocity()
+    {
+        return rb.velocity.y;
+    }
+
+    
 }
