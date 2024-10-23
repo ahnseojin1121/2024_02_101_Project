@@ -13,7 +13,7 @@ public abstract class Vehicle : MonoBehaviour
         transform.Translate(Vector3.forward * speed * Time.deltaTime);
     }
 
-    //
+    //추상 함수 : 경적
     public abstract void Horn();
     
 }

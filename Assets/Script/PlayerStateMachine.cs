@@ -41,6 +41,12 @@ public class PlayerStateMachine : MonoBehaviour
 
     public void TransitionToState(PlayerState newState)
     {
+        //현재 상태와 새로운 상태가 같은 타입일 경우
+        if (currentState?.GetType() == newState.GetType())
+        {
+            return;
+        }
+
         //
         currentState?.Exit();
 

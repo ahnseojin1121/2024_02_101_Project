@@ -14,6 +14,18 @@ public class PlayerController : MonoBehaviour
     public Camera firstPersonCamera;
     public Camera thirdPersonCamera;
 
+    public float cameraDistance = 5.0f;
+    public float minDistance = 1.0f;
+    public float maxDistance = 10.0f;
+
+    private float CurrentX = 0.0f;
+    private float CurrentY = 45.0f;
+
+    private const float Y_ANGLE_MIN = 0.0f;
+    private const float Y_ANGLE_MAX = 50.0f;
+    public float mouseSensitivity = 200f;
+
+
     public float radius = 5.0f;
     public float minRadius = 1.0f;
     public float maxRadius = 10.0f;
@@ -26,7 +38,6 @@ public class PlayerController : MonoBehaviour
     private float targetVerticalRotation = 0f;
     private float verticalRotationSpeed = 240f;
 
-    public float mouseSensitivity = 2f;
 
     //내부 변수들
     public bool isFirstPerson = true;
@@ -79,15 +90,6 @@ public class PlayerController : MonoBehaviour
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity;
         float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity;
 
-        //
-        theta += mouseX;
-        theta = Mathf.Repeat(theta, 360f);
-
-        //수직 회전 처리
-        targetVerticalRotation -= mouseY;
-        targetVerticalRotation = Mathf.Clamp(targetVerticalRotation, yMinLimit, yMaxLimit);
-        phi = Mathf.MoveTowards(phi, targetVerticalRotation, verticalRotationSpeed * Time.deltaTime);
-
         if(isFirstPerson)
         {
             transform.rotation = Quaternion.Euler(0.0f, theta, 0.0f);
@@ -95,14 +97,17 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            //3인칭 카메라 구면 좌표계에서 위치 및 회전 계산
-            float x = radius * Mathf.Sin(Mathf.Deg2Rad * phi) * Mathf.Cos(Mathf.Deg2Rad * theta);
-            float y = radius * Mathf.Cos(Mathf.Deg2Rad * phi);
-            float z = radius * Mathf.Sin(Mathf.Deg2Rad * phi) * Mathf.Cos(Mathf.Deg2Rad * theta);
+           CurrentX += mouseX;
+           CurrentY -= mouseY;
 
-            //마우스 스크롤을 사용하여 카메라 줌 조정
-            radius = Mathf.Clamp(radius - Input.GetAxis("Mouse ScrollWheel") *5 , minRadius, maxRadius);
+           CurrentY = Mathf.Clamp(CurrentY, Y_ANGLE_MIN, Y_ANGLE_MAX);
 
+           Vector3 dir = new Vector3(0, 0, cameraDistance);
+           Quaternion rotation =Quaternion.Euler(CurrentY, CurrentX, 0.0f);
+           thirdPersonCamera.transform.position = transform.position + rotation * dir;
+           thirdPersonCamera.transform.LookAt(transform.position);
+
+           cameraDistance = Mathf.Clamp(cameraDistance - Input.GetAxis("Mouse ScrollWheel") * 5, minDistance, maxDistance);
         }
     }
 

@@ -3,17 +3,20 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-public abstract class PlayerState : MonoBehaviour
+public abstract class PlayerState
 {
     protected PlayerStateMachine stateMachine;
     protected PlayerController playercontroller;
+    protected PlayerAnimationManager animationManager;
 
     public PlayerState(PlayerStateMachine stateMachine)
-    {  
+    {
         this.stateMachine = stateMachine;
         this.playercontroller  = stateMachine.PlayerController;
-    
+        this.animationManager = stateMachine.GetComponent<PlayerAnimationManager>();
     }
+    
+  
 
     //가상 메서드들  : 하위 클래스에서 필요에 따라 오버라이드
     public virtual void Enter() { }
@@ -54,7 +57,6 @@ public abstract class PlayerState : MonoBehaviour
             }
         }
     }
-
 }
 
 //IdleState : 플레이어가 정지해 있는 상태
