@@ -11,7 +11,7 @@ public class PlayerAnimationManager : MonoBehaviour
    private const string PARAM_IS_MOVING	= "IsMoving";
    private const string PARAM_IS_RUNNING = "IsRunning";
    private const string PARAM_IS_JUMPING = "IsJumping";
-   private const string RARAM_IS_FALLING = "isFalling";
+   private const string PARAM_IS_FALLING = "isFalling";
    private const string PARAM_ATTACK_TRIGGER = "Attack";
 
    void Update()
