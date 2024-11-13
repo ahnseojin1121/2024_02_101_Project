@@ -25,10 +25,10 @@ public class GridBuildingSystem : MonoBehaviour
     [SerializeField] private int height = 10;
     [SerializeField] private float cellsize = 1;
 
-    [SerializeField] private GameObject cellPrefeb;
+    [SerializeField] private GameObject cellPrefab;
     [SerializeField] private GameObject buildingPrefabs;
     [SerializeField] private PlayerController playerController;
-    [SerializeField] private float maxbuildDistance = 5f;
+    [SerializeField] private float maxBuildDistance = 5f;
 
 
     [SerializeField] private Grid grid;
@@ -105,7 +105,7 @@ public class GridBuildingSystem : MonoBehaviour
             {
                 Vector3Int cellposition = new Vector3Int(x, 0, z);
                 Vector3 worldPosition = grid.GetCellCenterWorld(cellposition);
-                GameObject cellObject = Instantiate(cellPrefeb, worldPosition, cellPrefeb.transform.rotation);
+                GameObject cellObject = Instantiate(cellPrefab, worldPosition, cellPrefab.transform.rotation);
                 cellObject.transform.SetParent(transform);
 
                 cells[x, z] = new GridCell(cellposition);
@@ -144,7 +144,7 @@ public class GridBuildingSystem : MonoBehaviour
         if (playerController.isFirstPerson)
         {
             Ray ray = new Ray(firstPersonCamera.transform.position, firstPersonCamera.transform.forward);
-            if (Physics.Raycast(ray, out RaycastHit hitInfo, maxbuildDistance))
+            if (Physics.Raycast(ray, out RaycastHit hitInfo, maxBuildDistance))
             {
                 Debug.DrawRay(ray.origin, ray.direction * hitInfo.distance, Color.red);
                 return hitInfo.point;
@@ -163,7 +163,7 @@ public class GridBuildingSystem : MonoBehaviour
             Vector3 rayDirection = (characterForward - Vector3.up).normalized;
 
             Ray ray = new Ray(firstPersonCamera.transform.position, firstPersonCamera.transform.forward);
-            if (Physics.Raycast(ray, out RaycastHit hitInfo, maxbuildDistance))
+            if (Physics.Raycast(ray, out RaycastHit hitInfo, maxBuildDistance))
             {
                 Debug.DrawRay(ray.origin, ray.direction * hitInfo.distance, Color.red);
                 return hitInfo.point;
