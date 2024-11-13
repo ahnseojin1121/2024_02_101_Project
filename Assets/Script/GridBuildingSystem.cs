@@ -184,8 +184,8 @@ public class GridBuildingSystem : MonoBehaviour
             {
                 for (int z = 0; z < height; z++)
                 {
-                    Vector3 cellCenter = grid.GetCellCenterWorld(new Vector3Int(x, 0, z));
-                    Gizmos.DrawWireCube(cellCenter, new Vector3(cellsize, 0.1f, cellsize));
+                    // cellCenter = grid.GetCellCenterWorld(new Vector3Int(x, 0, z));
+                    //Gizmos.DrawWireCube(cellCenter, new Vector3(cellsize, 0.1f, cellsize));
                 }
             }
         }

@@ -41,7 +41,7 @@ public class PlayerController : MonoBehaviour
 
     //내부 변수들
     public bool isFirstPerson = true;
-    //private bool isGrounded;
+    private bool isGrounded;
     private Rigidbody rb;
 
     public float fallingThreshold = -0.1f;
@@ -65,12 +65,8 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         HandleRotation();
+        HandleJump();
         HandleCameraToggle();
-
-        if(Input.GetKeyDown(KeyCode.Space))
-        {
-            HandleJump();
-        }
 
     }
 
@@ -85,7 +81,7 @@ public class PlayerController : MonoBehaviour
         thirdPersonCamera.gameObject.SetActive(isFirstPerson);
     }
 
-    public void HandleRotation()
+    void HandleRotation()
     {
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity;
         float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity;
@@ -130,11 +126,11 @@ public class PlayerController : MonoBehaviour
     }
     void HandleJump()
     {
-
         //점프 버튼을 누르고 땅에 있을 때
-        if (IsGrounded())
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
             rb.AddForce(Vector3.up * jumpforce, ForceMode.Impulse);
+            isGrounded = false;
         }
     }
 

@@ -114,6 +114,6 @@ public class FallingState : PlayerState
 
     public override void FixedUpdate()
     {
-        playercontroller.HandleMovement();
+        //playercontroller.HandleMovement();
     }
 }

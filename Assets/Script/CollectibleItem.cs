@@ -16,8 +16,17 @@ public class CollectibleItem : MonoBehaviour
     {
 
         if (!canCollect) return;
+
         inventory.AddItem(itemType);
+
+        if(FloatingTextManager.Instance != null)
+        {
+            Vector3 textPosition = transform.position + Vector3.up * 0.5f;
+            FloatingTextManager.Instance.Show($"+ {itemName}", textPosition);
+        }
+
         Debug.Log($"{itemName} 수집 완료");
+
         StartCoroutine(RespawnRoutine());
 
     }
