@@ -17,6 +17,10 @@ public class CraftingRecipe
     public string itemName;
     public ItemType resultItem;
     public int resultAmount = 1;
+
+    public float hungerRestoreAmount;
+    public float repairAmount;
+
     public ItemType[] requireditems;
     public int[] requiredAmounts;
 }

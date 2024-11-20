@@ -35,7 +35,7 @@ public class PlayerController : MonoBehaviour
 
     private float theta = 0.0f;
     private float phi = 0.0f;
-    private float targetVerticalRotation = 0f;
+    private float targetVerticalRotation = 0;
     private float verticalRotationSpeed = 240f;
 
 

@@ -9,14 +9,17 @@ public enum ItemType
     Plant,
     Bush,
     Tree,
+    VegetableStew,
+    FruitSalad,
+    RepairKit
 }
 
 public class ItemDetector : MonoBehaviour
 {
     public float checkRadius = 3.0f;
-    private Vector3 lastPosition;
+    public Vector3 lastPosition;
     private float moveThreshold = 0.1f;
-    private CollectibleItem currentNearbyItem;
+    public CollectibleItem currentNearbyItem;
 
 
 
@@ -34,7 +37,7 @@ public class ItemDetector : MonoBehaviour
     {
 
         //플레이어가 일정 거리 이상 이동했는지 체크
-        if (Vector3.Distance(lastPosition, transform.position) < moveThreshold) 
+        if (Vector3.Distance(lastPosition, transform.position) > moveThreshold) 
         {
 
             CheckForItems();
