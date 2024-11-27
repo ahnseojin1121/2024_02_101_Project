@@ -29,7 +29,7 @@ public abstract class PlayerState
 
     protected void CheckTransitions()
     {
-        if (playercontroller.IsGrounded())
+        if (playercontroller.isGrounded())
         {
             if(Input.GetKeyDown(KeyCode.Space))
             {
